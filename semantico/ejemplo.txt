@@ -1,0 +1,85 @@
+/* PRUEBA EXTENSA DE ROBOT
+   -----------------------
+   Objetivo: Simular una misión de patrullaje con
+   gestión de batería y evasión de obstáculos.
+*/
+
+int velocidad_crucero = 80;
+int velocidad_lenta = 30;
+int bateria_critica = 15;
+int distancia_segura = 20;
+
+int func main() {
+    int i = 0;
+    int bateria_actual = 0;
+    int sensor_front = 0;
+
+    // 1. VERIFICACION DE SISTEMAS
+    // Probamos asignacion con llamada a funcion
+    bateria_actual = battery(); 
+
+    if (bateria_actual < bateria_critica) {
+        // Si no hay batería, abortar misión
+        stop();
+        return 0;
+    } else {
+        // Señal de inicio (Giro 360)
+        turnLeft(360);
+        delay(500);
+    }
+
+    // 2. FASE DE APROXIMACION (Prueba de WHILE)
+    // Avanzar mientras no detectemos nada cerca
+    sensor_front = read(SENSOR_IZQ);
+    
+    // Nota: Como read() devuelve un random en la VM, esto simula
+    // avanzar hasta que el azar diga que hay un obstaculo (< 20)
+    while (sensor_front > distancia_segura) {
+        move(velocidad_crucero);
+        delay(200); 
+        sensor_front = read(SENSOR_IZQ);
+    }
+
+    // Frenar al detectar obstaculo
+    stop();
+    delay(500);
+
+    // 3. MANIOBRA DE EVASION (Operaciones matematicas)
+    // Retroceder un poco y girar
+    move(0 - 20); // Movimiento negativo (retroceso)
+    turnRight(45 + 45); // Giro de 90 grados calculado
+
+    // 4. PATRULLAJE EN CUADRADO (Prueba de FOR anidado con IF)
+    for (i = 0; i < 4; i = i + 1) {
+        
+        // Avanzar un lado del cuadrado
+        move(velocidad_lenta * 2); 
+        
+        // Chequeo secundario en cada esquina
+        int lectura = read(SENSOR_DER);
+        
+        if (lectura > 50) {
+            // Camino despejado, giro rápido
+            turnRight(90);
+        } else {
+            // Camino obstruido, esperar y girar lento
+            stop();
+            delay(1000);
+            turnRight(90);
+        }
+    }
+
+    // 5. FINALIZACION
+    stop();
+    
+    // Calculo complejo para verificar que el compilador respeta la precedencia
+    // (10 * 2) + (100 / 2) = 20 + 50 = 70
+    int check_mate = 10 * 2 + 100 / 2;
+    
+    if (check_mate == 70) {
+        // Baile de victoria
+        turnLeft(360);
+    }
+
+    return 0;
+}
