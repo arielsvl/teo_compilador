@@ -38,7 +38,6 @@ El repositorio contiene:
 - Implementación de la máquina virtual
 - Archivos del AST y módulos semánticos
 - Programas de prueba para validar el compilador
-- Documentación complementaria y diagramas
 
 ---
 
